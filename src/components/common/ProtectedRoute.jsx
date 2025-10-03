@@ -1,0 +1,21 @@
+// src/components/common/ProtectedRoute.jsx
+import React from "react";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
+const ProtectedRoute = ({ children }) => {
+  const { user } = useAuth();
+
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // 🚨 block unverified accounts
+  if (!user.emailVerified) {
+    return <Navigate to="/verify-email" replace />;
+  }
+
+  return children;
+};
+
+export default ProtectedRoute;
