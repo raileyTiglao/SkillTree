@@ -416,9 +416,6 @@ const getUserCategories = () => {
     }));
 };
 
-
-  
-
   // Loading state
   if (loading) {
     return (
@@ -584,31 +581,41 @@ const getUserCategories = () => {
                     </span>
                   </div>
                   <div className="skills-grid">
-                    {category.skills.map(skill => (
-                      <div
-                        key={skill.id}
-                        className={`skill-item ${completedSkills.has(skill.id) ? 'completed' : ''}`}
-                        onClick={() => handleSkillClick(skill)}
-                      >
-                        <div className="skill-header">
-                          <h4 className="skill-name">{skill.name}</h4>
-                          <span
-                            className="skill-difficulty"
-                            style={{ color: getDifficultyColor(skill.difficulty) }}
-                          >
-                            {skill.difficulty}
-                          </span>
-                        </div>
-                        <p className="skill-description">{skill.description}</p>
-                        <div className="skill-footer">
-                          <span className="skill-xp">{skill.xp} XP</span>
-                          {completedSkills.has(skill.id) && (
-                            <span className="skill-completed-badge">✅</span>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+              {category.skills.map(skill => {
+    // Determine if the skill is unlocked using the existing helper function
+                const unlocked = isSkillUnlocked(skill, category.skills, completedSkills);
+                const completed = completedSkills.has(skill.id);
+                  return (
+            <div
+              key={skill.id}
+              // Conditionally apply 'locked' class and only allow clicks if unlocked
+              className={`skill-item ${completed ? 'completed' : ''} ${!unlocked ? 'locked' : ''}`}
+              onClick={() => unlocked ? handleSkillClick(skill) : null}
+            >
+          <div className="skill-header">
+            <h4 className="skill-name">{skill.name}</h4>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                {/* Show a lock icon if the skill is not unlocked */}
+                {!unlocked && !completed && <span className="skill-lock-icon">🔒</span>}
+                <span
+                  className="skill-difficulty"
+                  style={{ color: getDifficultyColor(skill.difficulty) }}
+                >
+                  {skill.difficulty}
+                </span>
+              </div>
+            </div>
+              <p className="skill-description">{skill.description}</p>
+            <div className="skill-footer">
+              <span className="skill-xp">{skill.xp} XP</span>
+                {completed && (
+              <span className="skill-completed-badge">✅</span>
+            )}
+               </div>
+            </div>
+             );
+              })}
+              </div>
 
                   {/* Add Assessments Section */}
                   {category.assessments && category.assessments.length > 0 && (
