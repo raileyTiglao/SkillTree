@@ -582,7 +582,7 @@ const getUserCategories = () => {
                   </div>
                   <div className="skills-grid">
               {category.skills.map(skill => {
-    // Determine if the skill is unlocked using the existing helper function
+              // Determine if the skill is unlocked using the existing helper function
                 const unlocked = isSkillUnlocked(skill, category.skills, completedSkills);
                 const completed = completedSkills.has(skill.id);
                   return (
@@ -746,24 +746,22 @@ const getUserCategories = () => {
 
         {/* Reference Link */}
         {selectedSkill.Reference && (
-          <p className="modal-link">
-            <a
-              href={selectedSkill.Reference}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ color: "#4f8ef7", textDecoration: "underline", fontWeight: "600" }}
-              onClick={() => {
-               // Start timer only if not already clicked
-                if (!hasClickedLink) {
-                  setTimer(10); //temporary for testing only (default is 300)
-                  setIsTimerActive(true);
-                  setHasClickedLink(true); // Mark that user clicked the link
-                }
-              }}
-            >
-              📚 Check out this Module!
-            </a>
-          </p>
+          <a
+            href={selectedSkill.Reference}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="module-link-btn"
+            onClick={() => {
+             // Start timer only if not already clicked
+              if (!hasClickedLink) {
+                setTimer(10); //temporary for testing only (default is 300)
+                setIsTimerActive(true);
+                setHasClickedLink(true); // Mark that user clicked the link
+              }
+            }}
+          >
+            📚 Check out this Module!
+          </a>
         )}
 
         {!completedSkills.has(selectedSkill.id) && (

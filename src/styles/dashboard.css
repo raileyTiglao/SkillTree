@@ -478,6 +478,53 @@
   font-size: 1rem;
 }
 
+.module-link-btn {
+  display: block;
+  width: 100%;
+  background: linear-gradient(135deg, #4f8ef7 0%, #6c63ff 100%);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(79, 142, 247, 0.3);
+  text-align: center;
+  text-decoration: none;
+  margin-bottom: 1rem;
+}
+
+.module-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(79, 142, 247, 0.4);
+}
+
+.complete-skill-btn {
+  width: 100%;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+.complete-skill-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+}
+
+.complete-skill-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .complete-skill-btn {
   width: 100%;
   background: var(--primary-gradient);
