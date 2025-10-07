@@ -16,6 +16,7 @@ const Dashboard = () => {
   const [completedSkills, setCompletedSkills] = useState(new Set());
   const [completedAssessments, setCompletedAssessments] = useState(new Set());
   const [timer, setTimer] = useState(null); // seconds left
+  const [hasClickedLink, setHasClickedLink] = useState(false);
   const [isTimerActive, setIsTimerActive] = useState(false);
   const [userProgress, setUserProgress] = useState({
     totalSkills: 0,
@@ -30,12 +31,15 @@ const Dashboard = () => {
   const [userSelectedCategories, setUserSelectedCategories] = useState([]);
   const [showCategorySelector, setShowCategorySelector] = useState(false);
   
+
+  
   // Quiz states
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [quizCompleted, setQuizCompleted] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
+
 
   // Redirect if not logged in or verified
   useEffect(() => {
@@ -154,7 +158,12 @@ const Dashboard = () => {
 }, [isTimerActive, timer]);
 
   // Helper Functions
-  const handleSkillClick = (skill) => setSelectedSkill(skill);
+  const handleSkillClick = (skill) => {
+    setSelectedSkill(skill);
+    setHasClickedLink(false); // Reset when opening a new skill modal
+    setTimer(0); // Reset timer
+    setIsTimerActive(false);
+  };
 
   const handleSkillComplete = async (skillId) => {
     if (!user?.emailVerified || completedSkills.has(skillId)) return;
@@ -354,11 +363,61 @@ const Dashboard = () => {
   };
 
   // Get user's selected categories data
-  const getUserCategories = () => {
-    return userSelectedCategories
-      .map(catId => allSkillCategories.find(cat => cat.id === catId))
-      .filter(Boolean);
+ const getDifficultyOrder = (difficulty) => {
+  const order = {
+    'Beginner': 1,
+    'Intermediate': 2,
+    'Advanced': 3
   };
+  return order[difficulty] || 999; // Unknown difficulties go last
+};
+
+const isSkillUnlocked = (skill, categorySkills, completedSkills) => {
+  const skillDifficulty = getDifficultyOrder(skill.difficulty);
+  
+  // Beginner skills are always unlocked
+  if (skillDifficulty === 1) {
+    return true;
+  }
+  
+  // For Intermediate skills, check if all Beginner skills are completed
+  if (skillDifficulty === 2) {
+    const beginnerSkills = categorySkills.filter(s => getDifficultyOrder(s.difficulty) === 1);
+    return beginnerSkills.every(s => completedSkills.has(s.id));
+  }
+  
+  // For Advanced skills, check if all Beginner AND Intermediate skills are completed
+  if (skillDifficulty === 3) {
+    const beginnerSkills = categorySkills.filter(s => getDifficultyOrder(s.difficulty) === 1);
+    const intermediateSkills = categorySkills.filter(s => getDifficultyOrder(s.difficulty) === 2);
+    
+    const allBeginnerCompleted = beginnerSkills.every(s => completedSkills.has(s.id));
+    const allIntermediateCompleted = intermediateSkills.every(s => completedSkills.has(s.id));
+    
+    return allBeginnerCompleted && allIntermediateCompleted;
+  }
+  return false;
+};
+
+const getUserCategories = () => {
+  return userSelectedCategories
+    .map(catId => allSkillCategories.find(cat => cat.id === catId))
+    .filter(Boolean)
+    .map(category => ({
+      ...category,
+      // Sort skills by difficulty
+      skills: [...category.skills].sort((a, b) => 
+        getDifficultyOrder(a.difficulty) - getDifficultyOrder(b.difficulty)
+      ),
+      // Sort assessments by difficulty if they exist
+      assessments: category.assessments ? [...category.assessments].sort((a, b) => 
+        getDifficultyOrder(a.difficulty) - getDifficultyOrder(b.difficulty)
+      ) : []
+    }));
+};
+
+
+  
 
   // Loading state
   if (loading) {
@@ -647,14 +706,23 @@ const Dashboard = () => {
 
 {/* Skill Detail Modal */}
 {selectedSkill && (
-  
-  <div className="modal-overlay" onClick={() => setSelectedSkill(null)}>
+  <div className="modal-overlay" onClick={() => {
+    setSelectedSkill(null);
+    setHasClickedLink(false); // Reset on close
+    setTimer(0);
+    setIsTimerActive(false);
+  }}>
     <div className="skill-modal" onClick={(e) => e.stopPropagation()}>
       <div className="modal-header">
         <h3>{selectedSkill.name}</h3>
         <button
           className="modal-close"
-          onClick={() => setSelectedSkill(null)}
+          onClick={() => {
+            setSelectedSkill(null);
+            setHasClickedLink(false); // Reset on close
+            setTimer(0);
+            setIsTimerActive(false);
+          }}
         >
           ✕
         </button>
@@ -669,37 +737,41 @@ const Dashboard = () => {
         <p className="modal-description">{selectedSkill.description}</p>
         <p className="modal-xp">Reward: {selectedSkill.xp} XP</p>
 
-       {/* Reference Link */}
+        {/* Reference Link */}
         {selectedSkill.Reference && (
-         <p className="modal-link">
-           <a
-            href={selectedSkill.Reference}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: "#4f8ef7", textDecoration: "underline", fontWeight: "600" }}
-            onClick={() => {
-             // start 5-minute (300 seconds) timer
-             setTimer(300);
-             setIsTimerActive(true);
-           }}
-           >
-           📚 Check out this Module!
-       </a>
-   </p>
-)}
-
+          <p className="modal-link">
+            <a
+              href={selectedSkill.Reference}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#4f8ef7", textDecoration: "underline", fontWeight: "600" }}
+              onClick={() => {
+               // Start timer only if not already clicked
+                if (!hasClickedLink) {
+                  setTimer(10); //temporary for testing only (default is 300)
+                  setIsTimerActive(true);
+                  setHasClickedLink(true); // Mark that user clicked the link
+                }
+              }}
+            >
+              📚 Check out this Module!
+            </a>
+          </p>
+        )}
 
         {!completedSkills.has(selectedSkill.id) && (
           <button
             className="complete-skill-btn"
             onClick={() => handleSkillComplete(selectedSkill.id)}
-            disabled={timer > 0} 
->
-            {timer > 0 
-            ? `Please wait ${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, "0")}`
-          : "Mark as Complete"}
-</button>
-
+            disabled={!hasClickedLink || timer > 0} 
+          >
+            {!hasClickedLink 
+              ? "Click the module link first"
+              : timer > 0 
+                ? `Please wait ${Math.floor(timer / 60)}:${String(timer % 60).padStart(2, "0")}`
+                : "Mark as Complete"
+            }
+          </button>
         )}
         
         {completedSkills.has(selectedSkill.id) && (
