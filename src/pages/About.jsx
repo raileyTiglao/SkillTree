@@ -18,7 +18,7 @@ const About = () => {
       {/* Navigation Header */}
       <nav className="about-nav">
         <div className="nav-content">
-          <h2 className="logo-text">SkillForge</h2>
+          <h2 className="logo-text">SkillTree</h2>
           <button onClick={() => navigate('/')} className="nav-back-btn">
             ← Back to Home
           </button>
