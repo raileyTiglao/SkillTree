@@ -8,7 +8,7 @@ import Signup from './pages/Signup';
 import Dashboard from './pages/Dashboard';
 import VerifyEmail from './pages/VerifyEmail';
 import AdminSetup from './pages/AdminSetup';
-import About from './pages/About'; // Add this import
+import About from './pages/About'; 
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
         <div className="App">
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} /> {/* Add this route */}
+            <Route path="/about" element={<About />} /> 
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route 
