@@ -6,66 +6,7 @@
   overflow-x: hidden;
 }
 
-/* Navigation Header */
-.dashboard-navbar {
-  position: sticky;
-  top: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 3rem;
-  background: rgba(15, 20, 25, 0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--border-color);
-  z-index: 100;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
-}
 
-.nav-center {
-  flex: 1;
-  display: flex;
-  justify-content: center;
-}
-
-.welcome-text {
-  color: var(--text-secondary);
-  font-size: 1.1rem;
-  font-weight: 500;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.user-level {
-  background: var(--primary-gradient);
-  color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.logout-btn {
-  background: rgba(244, 67, 54, 0.1);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  color: #f44336;
-  padding: 0.6rem 1.2rem;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-weight: 500;
-}
-
-.logout-btn:hover {
-  background: rgba(244, 67, 54, 0.2);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(244, 67, 54, 0.3);
-}
 
 /* Main Dashboard Content */
 .dashboard-main {
@@ -478,53 +419,6 @@
   font-size: 1rem;
 }
 
-.module-link-btn {
-  display: block;
-  width: 100%;
-  background: linear-gradient(135deg, #4f8ef7 0%, #6c63ff 100%);
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(79, 142, 247, 0.3);
-  text-align: center;
-  text-decoration: none;
-  margin-bottom: 1rem;
-}
-
-.module-link-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(79, 142, 247, 0.4);
-}
-
-.complete-skill-btn {
-  width: 100%;
-  background: var(--primary-gradient);
-  color: white;
-  border: none;
-  padding: 1rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
-}
-
-.complete-skill-btn:hover:not(:disabled) {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-}
-
-.complete-skill-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 .complete-skill-btn {
   width: 100%;
   background: var(--primary-gradient);
@@ -553,6 +447,161 @@
   text-align: center;
   font-weight: 600;
   font-size: 1.1rem;
+}
+
+
+/* Module Button Styling */
+.module-btn {
+  display: inline-block;
+  width: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 1rem;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+  margin-bottom: 1rem;
+}
+
+.module-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  text-decoration: none;
+  color: white;
+}
+
+.module-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+}
+
+
+/* Locked Skill Styles */
+.skill-item.locked {
+  position: relative;
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(148, 163, 184, 0.2);
+  cursor: not-allowed;
+}
+
+.skill-item.locked:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(148, 163, 184, 0.2);
+  transform: none;
+  box-shadow: none;
+}
+
+.lock-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.skill-item.locked .skill-name,
+.skill-item.locked .skill-description,
+.skill-item.locked .skill-difficulty,
+.skill-item.locked .skill-xp {
+  opacity: 0.4;
+}
+
+/* Lock Icon Animation */
+.lock-overlay svg {
+  animation: lockPulse 2s ease-in-out infinite;
+}
+
+@keyframes lockPulse {
+  0%, 100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+}
+
+/* Locked Assessment Styles */
+.assessment-item.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.assessment-item.locked:hover {
+  transform: none;
+  box-shadow: none;
+}
+
+.assessment-item.locked::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  pointer-events: none;
+}
+
+
+
+/* Prerequisites Info */
+.prerequisites-info {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  background: rgba(244, 67, 54, 0.1);
+  border: 1px solid rgba(244, 67, 54, 0.2);
+  border-radius: 8px;
+  text-align: center;
+}
+
+.prerequisites-info small {
+  color: #f87171;
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+/* Responsive adjustments for locked skills */
+@media (max-width: 768px) {
+  .lock-overlay svg {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .lock-overlay p {
+    font-size: 0.75rem;
+    padding: 0 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .lock-overlay svg {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .lock-overlay p {
+    font-size: 0.7rem;
+  }
 }
 
 /* Skill Complete Notification */

@@ -7,7 +7,8 @@ import {
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 import Dashboard from "./Dashboard";
-import "../styles/app.css";
+import "../styles/login.css";
+import "../styles/NavigationBar.css";
 import Header from "../components/common/Header";
 import { Link } from "react-router-dom";
 
